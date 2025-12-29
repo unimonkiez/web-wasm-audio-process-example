@@ -11,20 +11,19 @@ const api = {
         self: wasm.AudioCombiner,
         ...args: Parameters<typeof wasm.AudioCombiner.prototype.combine>
     ) => self.combine(...args),
-    createCombiner: (
+    createCombiner: async (
         fileData: Array<{ bytes: Uint8Array; type: wasm.SingleAudioFileType }>,
     ) => {
         const wasmFiles = fileData.map((f) =>
             wasm.SingleAudioFile.new(f.bytes, f.type)
         );
 
-        const combiner = wasm.AudioCombiner.new(wasmFiles);
+        const combiner = await wasm.AudioCombiner.new(wasmFiles);
 
         // Wrap the combiner in a proxy so we can call its methods
         return Comlink.proxy({
-            // deno-lint-ignore require-await
             async combine(volumes: Uint8Array) {
-                const resultFile = combiner.combine(volumes);
+                const resultFile = await combiner.combine(volumes);
                 if (!("bytes" in resultFile)) {
                     throw resultFile;
                 }
