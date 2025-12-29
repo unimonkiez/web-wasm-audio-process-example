@@ -11,6 +11,10 @@ const api = {
         self: wasm.AudioCombiner,
         ...args: Parameters<typeof wasm.AudioCombiner.prototype.combine>
     ) => self.combine(...args),
+    init: async () => {
+        await wasm.default();
+        await wasm.initThreadPool(navigator.hardwareConcurrency);
+    },
     createCombiner: (
         fileData: Array<{ bytes: Uint8Array; type: wasm.SingleAudioFileType }>,
     ) => {

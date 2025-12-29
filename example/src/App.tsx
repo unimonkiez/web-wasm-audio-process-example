@@ -19,6 +19,8 @@ function assertNever(value: never) {
   throw new Error("Unexpected value: " + value);
 }
 
+let ran = false;
+
 // function usePrevious<T>(value: T): T | undefined {
 //   const ref = React.useRef<T>();
 //   React.useEffect(() => {
@@ -29,6 +31,16 @@ function assertNever(value: never) {
 
 function App() {
   const [files, setFiles] = React.useState<AudioFile[]>([]);
+
+  React.useEffect(() => {
+    if (ran) {
+      return;
+    }
+    ran = true;
+    (async () => {
+      await api.init();
+    })();
+  }, []);
 
   // Persist the WASM instance and the Audio element
   const audioCombinerRef =

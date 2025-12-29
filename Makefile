@@ -1,2 +1,2 @@
 start-example:
-	wasm-pack build && (cd example && deno install && deno run dev)
+	wasm-pack build --target web && (cd example && deno install && deno run dev)
